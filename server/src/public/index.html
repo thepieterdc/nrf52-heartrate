@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+    <title>Logger</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/assets/stylesheets/combined.min.css"/>
+</head>
+<body class="pt-3">
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>Monitoring</h1>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Devices
+                </div>
+                <div class="card-body">
+                    <form action="#">
+                        <div class="form-row">
+                            <div class="col-12">
+                                <select class="form-control"
+                                        id="device-select"></select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card" id="parameters-loaded">
+                <div class="card-header">
+                    Parameters
+                </div>
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody id="parameters-tbl">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    Measurements
+                </div>
+                <div class="card-body" id="measurements-chart-container">
+                    <canvas id="measurements-chart"></canvas>
+                </div>
+                <table class="table table-striped mb-0">
+                    <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody id="measurements-tbl">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/assets/scripts/vendor.min.js"></script>
+<script type="text/javascript" src="/assets/scripts/combined.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        window.iot.init();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "name": "iot-server",
+  "version": "0.0.1",
+  "main": "server.js",
+  "repository": "git+https://github.ugent.be/piedcler/iot-project",
+  "scripts": {
+    "postinstall": "node_modules/.bin/gulp",
+    "start": "node_modules/.bin/gulp && node bootstrap.js",
+    "start-only": "node bootstrap.js",
+    "watch": "node_modules/.bin/gulp && node_modules/.bin/gulp watch"
+  },
+  "author": "Pieter De Clercq <piedcler.declercq@ugent.be>",
+  "license": "MIT",
+  "private": true,
+  "browserslist": "> 0.25%, not dead",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "bootswatch": "^4.4.1",
+    "chart.js": "^2.9.3",
+    "dotenv": "^8.2.0",
+    "express": "^5.0.0-alpha.7",
+    "jquery": "^3.4.1",
+    "moment": "^2.24.0",
+    "promise": "^8.0.3",
+    "sqlite": "^3.0.3",
+    "ws": "^7.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/runtime": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^3.0.2",
+    "webpack": "^4.41.2",
+    "webpack-stream": "^5.2.1"
+  }
+}
