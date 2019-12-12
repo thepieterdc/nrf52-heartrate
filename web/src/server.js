@@ -93,7 +93,7 @@ Promise.resolve()
     .then(() => db.migrate({force: 'last'}))
     .catch((err) => console.error(err.stack))
     .finally(() => {
-        app.listen(process.env['PORT'], () => {
+        app.listen(process.env['PORT'], '0.0.0.0', () => {
             console.info(`Started the server at port: ${process.env['PORT']}`);
         });
     });

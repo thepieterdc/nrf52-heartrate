@@ -4,7 +4,6 @@
   "main": "server.js",
   "repository": "git+https://github.ugent.be/piedcler/iot-project",
   "scripts": {
-    "postinstall": "node_modules/.bin/gulp",
     "start": "node_modules/.bin/gulp && node bootstrap.js",
     "start-only": "node bootstrap.js",
     "watch": "node_modules/.bin/gulp && node_modules/.bin/gulp watch"
