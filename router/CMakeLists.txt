@@ -20,6 +20,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -Wno-missing-field-initializers -Wn
 # Packages.
 find_package(CURL REQUIRED)
 find_package(Json REQUIRED)
+find_package(BlueZ REQUIRED)
 
 # Sources.
 file(GLOB util_SRC
@@ -30,7 +31,16 @@ file(GLOB web_SRC
         "src/web/*.h"
         "src/web/*.cpp")
 
-add_executable(router src/main.cpp ${util_SRC} ${web_SRC})
+file(GLOB bt_SRC
+        "src/bt/*.h"
+        "src/bt/*.cpp")
+
+add_executable(router src/main.cpp ${util_SRC} ${web_SRC} ${bt_SRC})
 target_link_libraries(router curl)
 
-include_directories(${JSON_INCLUDE_DIRS})
+set(BT_HRS_ADDRESS DD:BF:23:31:C0:B8)
+add_compile_definitions(BT_HRS_ADDRESS="${BT_HRS_ADDRESS}")
+
+message("${BLUEZ_FOUND} ${BLUEZ_INCLUDE_DIRS}")
+
+include_directories(${JSON_INCLUDE_DIRS} ${BLUEZ_INCLUDE_DIRS})
