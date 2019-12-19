@@ -9,7 +9,7 @@
 #include <iostream>
 #include <ctime>
 #include <chrono>
-#include "logging_util.h"
+#include "logging.h"
 
 #define COLOUR_OUT_BRIGHT_RED    "\x1B[1;31m"
 #define COLOUR_OUT_CYAN          "\x1B[36m"
@@ -65,14 +65,14 @@ static void output_log(char type, const std::string &msg) {
     }
 }
 
-void log_info(const std::string &msg) {
+void util::logging::error(const std::string &msg) {
+    output_log('E', msg);
+}
+
+void util::logging::info(const std::string &msg) {
     output_log('I', msg);
 }
 
-void log_success(const std::string &msg) {
+void util::logging::success(const std::string &msg) {
     output_log('S', msg);
-}
-
-void throw_error(const std::string &msg) {
-    output_log('E', msg);
 }

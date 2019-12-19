@@ -15,31 +15,52 @@
 
 using json = nlohmann::json;
 
-class Client {
-private:
-    std::string device;
-    std::string url;
-public:
+namespace web {
     /**
-     * Client constructor.
-     *
-     * @param device the device id
-     * @param url the web service url
+     * Web client.
      */
-    Client(std::string device, std::string url) : device(std::move(device)),
-                                                  url(std::move(url)) {};
+    class client {
+    private:
+        std::string device;
+        std::map<std::int64_t, float> queue;
+        std::string parameters_url;
+        std::string ping_url;
 
-    /**
-     * Client destructor.
-     */
-    ~Client() = default;
+        /**
+         * Flushes the queue and pushes all values to the server.
+         */
+        void flush();
 
-    /**
-     * Publishes the given value to the web service.
-     *
-     * @param value the value to publish
-     */
-    json publish(double value);
-};
+    public:
+        /**
+         * client constructor.
+         *
+         * @param device the device id
+         * @param url the web service ping url
+         * @param url the web service parameters url
+         */
+        client(std::string device, std::string ping_url, std::string params);
+
+        /**
+         * client destructor.
+         */
+        ~client();
+
+        /**
+         * Gets the parameter values as json.
+         *
+         * @return the json response
+         */
+        json parameters() const;
+
+        /**
+         * Publishes the given value to the web service.
+         *
+         * @param value the value to publish
+         * @return the response
+         */
+        void publish(float value);
+    };
+}
 
 #endif /* ROUTER_WEB_CLIENT_H */

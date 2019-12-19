@@ -1,8 +1,27 @@
-#include <iostream>
+/**
+ * Copyright (c) 2019. All rights reserved.
+ *
+ * @author Freija Verbeke
+ * @author Mathieu Coussens
+ * @author Pieter De Clercq
+ */
+
 #include <unistd.h>
-#include "util/logging_util.h"
+#include <iostream>
+#include <thread>
+#include "bt/client.h"
+#include "util/logging.h"
 #include "web/client.h"
-#include "bt/IOTBTClient.h"
+
+void on_notification(const uuid_t *uuid, const uint8_t *data,
+                     size_t data_length, void *web) {
+    // Convert the value to a float.
+    const float heart_rate = data[0];
+
+    // Publish the heart rate.
+    auto *client = static_cast<web::client *>(web);
+    client->publish(heart_rate);
+}
 
 /**
  * Entrypoint.
@@ -13,40 +32,64 @@
  */
 int main(int argc, char **argv) {
     if (argc != 3) {
-        throw_error("Syntax: ./router https://web.service.url/ deviceId");
+        util::logging::error(
+                "Syntax: ./router https://web.service.url/ device_address");
         exit(EXIT_FAILURE);
     }
 
-    const std::string device(argv[2]);
+    const std::string device_address(argv[2]);
     const std::string url(argv[1]);
 
-    log_info("Device: " + device);
-    log_info("Service: " + url);
+    if (device_address.length() != 17) {
+        util::logging::error("Address of the device should be 17 characters.");
+        exit(EXIT_FAILURE);
+    }
 
-    // Create a client.
-    Client client(device, url);
+    util::logging::info("Device: " + device_address);
+    util::logging::info("Service: " + url);
 
-    IOTBTClient btClient;
+    // Create a web client.
+    web::client web_client(device_address, url + "/ping",
+                           url + "/parameters?device=" + device_address);
 
-    // Example loop.
-    // TODO: replace by bluetooth-y code.
-    srand(time(nullptr));
-    while(true) {
-        // Obtain value from the device.
-//        // TODO: obtain this value from the device.
-//        const double value = rand() % 50;
-//        log_info("Publishing value: " + std::to_string(value));
-//
-//        // Publish the value to the webservice and obtain the parameter values.
-//        const auto parameters = client.publish(value);
-//
-//        // TODO: send this value to the device.
-//        const auto frequency = parameters["frequency"].get<double>();
-//        log_info("Parameter \"frequency\" value: " + std::to_string(frequency));
-        char buffer[2048];
-        btClient.readMessage(buffer, 128);
-        printf("%s\n", buffer);
-        sleep(10);
+    // Create a bluetooth client.
+    bt::client bt_client(device_address);
+
+    // Attempt to connect to the device.
+    util::logging::info("Connecting to the device...");
+    if (bt_client.connect()) {
+        util::logging::success("Connected to the device.");
+    } else {
+        util::logging::error("Could not connect to the device.");
+        exit(EXIT_FAILURE);
+    }
+
+    // Listen for notifications.
+    bt_client.listen(on_notification, &web_client);
+
+    // Main loop: Update parameters on the device.
+    std::uint8_t prev_max = 0;
+    std::uint8_t prev_min = 0;
+    while (true) {
+        // Obtain the parameter values.
+        const json parameters = web_client.parameters();
+
+        // Convert the parameters to the correct format.
+        const auto max = parameters["max"].get<std::uint8_t>();
+        const auto min = parameters["min"].get<std::uint8_t>();
+
+        if (max == prev_max && min == prev_min) {
+            // Same values, ignore.
+            continue;
+        }
+
+        bt_client.update_parameters(max, min);
+
+        prev_max = max;
+        prev_min = min;
+
+        // Wait 5 seconds.
+        sleep(5);
     }
 
     return EXIT_SUCCESS;
