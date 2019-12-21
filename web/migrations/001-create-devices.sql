@@ -5,7 +5,7 @@
 CREATE TABLE devices
 (
     device_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR
+    address VARCHAR UNIQUE
 );
 
 --------------------------------------------------------------------------------

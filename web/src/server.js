@@ -20,8 +20,8 @@ app.get('/', (req, res) => {
 app.get('/devices', async (req, res) => {
     const devices = await db.all("SELECT * FROM devices");
 
-    const resp = devices.map(({device_id, name}) => {
-        return {"id": device_id, "name": name}
+    const resp = devices.map(({device_id, address}) => {
+        return {"id": device_id, "address": address}
     });
 
     res.status(200).json(resp);
@@ -30,7 +30,10 @@ app.get('/devices', async (req, res) => {
 app.get('/measurements', async (req, res) => {
     const {device} = req.query;
 
-    const parameters = await db.all("SELECT * FROM measurements WHERE device_id=?", device);
+    // Find the device id for the given address.
+    const {device_id} = await db.get("SELECT device_id FROM devices WHERE address=?", device);
+
+    const parameters = await db.all("SELECT * FROM measurements WHERE device_id=? ORDER BY dateline DESC", device_id);
 
     const resp = {};
     parameters.forEach(({dateline, value}) => {
@@ -43,8 +46,11 @@ app.get('/measurements', async (req, res) => {
 app.get('/parameters', async (req, res) => {
     const {device} = req.query;
 
+    // Find the device id for the given address.
+    const {device_id} = await db.get("SELECT device_id FROM devices WHERE address=?", device);
+
     // Fetch the parameter values for this device.
-    const parameters = await db.all("SELECT * FROM parameters WHERE device_id=?", device);
+    const parameters = await db.all("SELECT * FROM parameters WHERE device_id=?", device_id);
 
     const resp = {};
     parameters.forEach(({name, value}) => {
@@ -57,35 +63,40 @@ app.get('/parameters', async (req, res) => {
 app.put('/parameters', async (req, res) => {
     const {device, parameter, value} = req.body;
 
-    // Update the values for this device.
-    await db.run("UPDATE parameters SET value=? WHERE device_id=? AND name=?", value, device, parameter);
+    // Find the device id for the given address.
+    const {device_id} = await db.get("SELECT device_id FROM devices WHERE address=?", device);
 
-    res.status(204).end();
+    if (value < 30 || value > 200) {
+        res.status(400).end();
+    } else {
+        // Update the values for this device.
+        await db.run("UPDATE parameters SET value=? WHERE device_id=? AND name=?", value, device_id, parameter);
+
+        res.status(204).end();
+    }
 });
 
 app.post('/ping', async (req, res) => {
-    const {device, value} = req.body;
+    const {device, measurements} = req.body;
 
-    // Update the values for this device.
-    await db.run("INSERT INTO measurements (device_id, value) VALUES (?, ?)", device, value);
+    console.log(req.body);
 
-    // Fetch the parameter values for this device.
-    const parameters = await db.all("SELECT * FROM parameters WHERE device_id=?", device);
+    // Find the device id for the given address.
+    const {device_id} = await db.get("SELECT device_id FROM devices WHERE address=?", device);
 
-    // Answer format.
-    if (req.accepts("json")) {
-        console.log(parameters);
-        // Answer in json.
-        const resp = {};
-        parameters.forEach(({name, value}) => {
-            resp[name] = value;
-        });
-        res.status(201).json(resp);
-    } else {
-        // Answer literal text.
-        const resp = parameters.map(({name, val}) => `${name}=${val}`).join("\n");
-        res.status(201).send(resp);
-    }
+    // Query placeholders.
+    const placeholders = measurements.map((_) => `(${device_id}, ?, ?)`).join(',');
+
+    // Create the query.
+    const sql = `INSERT INTO measurements (device_id, dateline, value) VALUES ${placeholders}`;
+
+    // Find the parameter values.
+    const parameter_values = measurements.map(({timestamp, value}) => [timestamp, value]).flat();
+
+    // Execute the query.
+    const resp = await db.run(sql, parameter_values);
+
+    res.status(204).end();
 });
 
 Promise.resolve()

@@ -34,8 +34,8 @@ async function loadDevices() {
 
     const resp = await $.getJSON(`/devices`);
 
-    $device_select.html(Object.values(resp).map(({id, name}) => {
-        return `<option value="${id}">${name}</option>`;
+    $device_select.html(Object.values(resp).map(({id, address}) => {
+        return `<option value="${id}" data-address="${address}">${address}</option>`;
     }));
 }
 
@@ -58,7 +58,7 @@ async function loadMeasurements(device) {
             </tr>
         `);
     } else {
-        $measurements_tbl.html(Object.entries(resp).map((entry) => {
+        $measurements_tbl.html(Object.entries(resp).slice(0, 5).map((entry) => {
             const [dateline, value] = entry;
             return `
                 <tr>
@@ -84,7 +84,7 @@ async function loadMeasurements(device) {
                     borderWidth: 1,
                     data: ys,
                     fill: false,
-                    label: 'Measured value'
+                    label: 'Measured heart rate'
                 }],
                 labels: xs
             },
@@ -134,17 +134,14 @@ async function loadParameters(device) {
 }
 
 function parseTimestamp(dateline) {
-    const date = new Date(dateline * 1000);
+    const date = new Date(parseInt(dateline));
     return date.toLocaleDateString() + ", " + date.toLocaleTimeString();
 }
 
 window.iot = {
     init: async () => {
-        const $device_select = $(device_select);
-
         $(document).on('change', device_select, async (e) => {
-            const device = $device_select.val();
-            await loadDevice(device);
+            await loadDevice($(`${device_select} option:selected`).attr('data-address'));
         });
 
         $(document).on('change', `.${parameter_input}`, async function (e) {
@@ -165,6 +162,6 @@ window.iot = {
         });
 
         await loadDevices();
-        await loadDevice($device_select.val());
+        await loadDevice($(`${device_select} option:selected`).attr('data-address'));
     }
 };

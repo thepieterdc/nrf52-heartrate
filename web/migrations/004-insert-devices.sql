@@ -2,8 +2,7 @@
 -- Up
 --------------------------------------------------------------------------------
 
-INSERT INTO devices (name) VALUES ("Pieter's board");
-INSERT INTO devices (name) VALUES ("Mathieu's board");
+INSERT INTO devices (address) VALUES ("DD:BF:23:31:C0:B8");
 
 --------------------------------------------------------------------------------
 -- Down

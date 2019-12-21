@@ -2,8 +2,8 @@
 -- Up
 --------------------------------------------------------------------------------
 
-INSERT INTO parameters (name, device_id, value) VALUES ('frequency', 1, 50.0);
-INSERT INTO parameters (name, device_id, value) VALUES ('frequency', 2, 20.0);
+INSERT INTO parameters (name, device_id, value) VALUES ('max', 1, 80);
+INSERT INTO parameters (name, device_id, value) VALUES ('min', 1, 45);
 
 --------------------------------------------------------------------------------
 -- Down
