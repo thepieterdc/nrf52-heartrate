@@ -1,0 +1,42 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[toc,page]{appendix}
+\usepackage[english]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[default,scale=0.95]{opensans}
+\usepackage{scrlayer}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\begin{document}
+
+\DeclareNewLayer[
+	foreground,
+	foot,
+	contents={\parbox[b][\layerheight][b]{\layerwidth}{%
+		\includegraphics[height=2.5cm]{images/logo-ghent-university.pdf}
+		\hfill
+		\includegraphics[height=1.2cm]{images/logo-sciences.pdf}%
+		\vspace*{1cm}
+	}}
+]{titlepage.logos}
+
+\title{
+	\vspace*{1.4in}
+	\Huge{Internet of Things}\\
+	\vspace*{0.4in}
+	\Large{Bluetooth Low Energy 5.0}\\
+	\vspace*{4cm}
+}
+
+\author{Mathieu Coussens \and Pieter De Clercq \and Freija Verbeke}
+
+\AddLayersToPageStyle{empty}{titlepage.logos}
+\maketitle
+\RemoveLayersFromPageStyle{empty}{titlepage.logos}
+
+\end{document}

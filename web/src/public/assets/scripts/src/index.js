@@ -72,7 +72,7 @@ async function loadMeasurements(device) {
         const ys = [];
 
         Object.entries(resp).forEach((entry) => {
-            xs.push(new Date(entry[0] * 1000));
+            xs.push(new Date(parseInt(entry[0])));
             ys.push(entry[1]);
         });
 
@@ -91,7 +91,8 @@ async function loadMeasurements(device) {
             options: {
                 scales: {
                     xAxes: [{
-                        type: 'time'
+                        type: 'time',
+                        time: {stepSize: 5, unit: 'second'}
                     }],
                     yAxes: [{
                         ticks: {

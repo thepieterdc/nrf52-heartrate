@@ -5,6 +5,9 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="/assets/stylesheets/combined.min.css"/>
+    <style type="text/css">
+    @media print{@page {size: landscape}}
+    </style>
 </head>
 <body class="pt-3">
 <div class="container">
@@ -35,50 +38,69 @@
     </div>
 
     <div class="row mb-3">
-        <div class="col-12">
-            <div class="card" id="parameters-loaded">
-                <div class="card-header">
-                    Parameters
+        <div class="col-4">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card" id="parameters-loaded">
+                        <div class="card-header">
+                            Parameters
+                        </div>
+                        <table class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Value</th>
+                            </tr>
+                            </thead>
+                            <tbody id="parameters-tbl">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <table class="table mb-0">
-                    <thead>
-                    <tr>
-                        <th>Key</th>
-                        <th>Value</th>
-                    </tr>
-                    </thead>
-                    <tbody id="parameters-tbl">
-                    </tbody>
-                </table>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Last 5 measurements
+                        </div>
+                        <table class="table table-striped mb-0">
+                            <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Value</th>
+                            </tr>
+                            </thead>
+                            <tbody id="measurements-tbl">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    Measurements
+        <div class="col-8">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Overview
+                        </div>
+                        <div class="card-body"
+                             id="measurements-chart-container">
+                            <canvas id="measurements-chart"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body" id="measurements-chart-container">
-                    <canvas id="measurements-chart"></canvas>
-                </div>
-                <table class="table table-striped mb-0">
-                    <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>Value</th>
-                    </tr>
-                    </thead>
-                    <tbody id="measurements-tbl">
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 </div>
-<script type="text/javascript" src="/assets/scripts/vendor.min.js"></script>
-<script type="text/javascript" src="/assets/scripts/combined.min.js"></script>
+<script type="text/javascript"
+        src="/assets/scripts/vendor.min.js"></script>
+<script type="text/javascript"
+        src="/assets/scripts/combined.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         window.iot.init();
