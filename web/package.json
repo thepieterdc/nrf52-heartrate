@@ -18,7 +18,7 @@
     "chart.js": "^2.9.3",
     "dotenv": "^8.2.0",
     "express": "^5.0.0-alpha.7",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "promise": "^8.0.3",
     "sqlite": "^3.0.3",
